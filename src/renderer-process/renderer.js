@@ -1,0 +1,14 @@
+// This file is required by the index.html file and will
+// be executed in the renderer process for that window.
+// All of the Node.js APIs are available in this process.
+/* global module:false */
+
+function appendParagraph(text) {
+  const p = document.createElement('p');
+  p.innerHTML = text;
+  document.body.appendChild(p);
+}
+
+module.exports = {
+  appendParagraph,
+};
