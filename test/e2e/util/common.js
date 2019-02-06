@@ -4,6 +4,7 @@ const path = require('path');
 const process = require('process');
 const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
+const spectronFakeMenu = require('spectron-fake-menu');
 
 function findElectronPath() {
   return path.join(__dirname, '..', '..', '..', 'node_modules', '.bin', 'electron');
@@ -27,6 +28,8 @@ function openApp(args = []) {
     path: electronPath,
     args: args,
   });
+
+  spectronFakeMenu.apply(app);
 
   return app;
 }

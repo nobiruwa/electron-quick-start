@@ -1,10 +1,11 @@
 /* global global:false, require:false, __dirname:false */
 /* global describe:false, after:false, afterEach:false, before:false, beforeEach:false, it:false */
 const openApp = require('./util/common.js').openApp;
-const TestPage = require('./util/page/test-page.js');
+const spectronFakeMenu = require('spectron-fake-menu');
+const SamplePage = require('./util/page/sample-page.js');
+const FakeMenu = require('./util/fake/menu.js');
 
 let app = openApp();
-let page = TestPage(app);
 
 describe('Test Example', () => {
   beforeEach(() => {
@@ -15,11 +16,24 @@ describe('Test Example', () => {
     return app.stop();
   });
 
-  it('opens a window', () => {
-    return page.getWindowCount().should.eventually.equal(page.windowCount);
-  });
+  it('モーダルダイアログのrenderer-processに対する操作ができること', async () => {
 
-  it('opens a window', () => {
-    return page.assertWindowCount();
+    await FakeMenu(app).setConfigurationOnModalDialog(
+      [
+        'value 1',
+        'value 2',
+        'value 3',
+        'value 4',
+      ],
+    );
+
+    await SamplePage(app).getFieldValues().should.eventually.deep.equal(
+      [
+        'value 1',
+        'value 2',
+        'value 3',
+        'value 4',
+      ],
+    );
   });
 });

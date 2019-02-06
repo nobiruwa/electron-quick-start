@@ -1,15 +1,60 @@
 /* global __dirname:false, require:false */
 // Modules to control application life and create native browser window
-const { app, BrowserWindow } = require('electron');
+const { app, ipcMain, BrowserWindow, Menu } = require('electron');
 const path = require('path');
+
+ipcMain.on('pass-data-renderers', (window, eventArgs) => {
+  console.log(eventArgs);
+  if (windows[eventArgs.to]) {
+    windows[eventArgs.to].webContents.send('pass-data-renderers', eventArgs);
+  }
+});
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let mainWindow;
+const windows = {
+};
+
+function openModalDialog(top) {
+  const childWindow = new BrowserWindow({
+    parent: top,
+    modal: true,
+    show: false,
+  });
+
+  childWindow.loadFile(path.join(__dirname, '..', 'renderer-process', 'configuration-dialog', 'index.html'));
+
+  childWindow.on('closed', function () {
+    windows.childWindow = null;
+  });
+
+  childWindow.show();
+
+  windows.childWindow = childWindow;
+}
+
+
+
+const templateMenu = [
+  {
+    label: 'Open',
+    submenu: [
+      {
+        label: 'Dialog',
+        click(item, focusedWindow) {
+          openModalDialog(focusedWindow);
+        },
+      },
+    ],
+  },
+];
+
+const menu = Menu.buildFromTemplate(templateMenu);
+Menu.setApplicationMenu(menu);
 
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({
+  const mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
@@ -28,8 +73,10 @@ function createWindow () {
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
-    mainWindow = null;
+    windows.mainWindow = null;
   });
+
+  windows.mainWindow = mainWindow;
 }
 
 // This method will be called when Electron has finished
@@ -49,7 +96,7 @@ app.on('window-all-closed', function () {
 app.on('activate', function () {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
-  if (mainWindow === null) {
+  if (windows.mainWindow === null) {
     createWindow();
   }
 });
