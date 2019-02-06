@@ -1,8 +1,9 @@
 const { ipcRenderer, remote } = require('electron');
 
-let closeButton = document.getElementById('close');
+let okButton = document.getElementById('ok');
+let cancelButton = document.getElementById('cancel');
 
-closeButton.addEventListener('click', () => {
+function onOkButtonClick() {
   const window = remote.getCurrentWindow();
   ipcRenderer.send('pass-data-renderers', {
     from: 'childWindow',
@@ -16,4 +17,12 @@ closeButton.addEventListener('click', () => {
     },
   });
   window.close();
-});
+}
+
+function onCancelButtonClick() {
+  const window = remote.getCurrentWindow();
+  window.close();
+}
+
+okButton.addEventListener('click', onOkButtonClick);
+cancelButton.addEventListener('click', onCancelButtonClick);

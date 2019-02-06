@@ -1,23 +1,21 @@
 /* global require:false, module:false */
-const MAIN_WINDOW = 0;
-const CHILD_WINDOW = 1;
 const spectronFakeMenu = require('spectron-fake-menu');
-const ConfigurationDialogPage = require('../page/configuration-dialog-page.js');
 
+/**
+ * @description メニューをクリックする操作を擬似的に再現します。
+ */
 class FakeMenu {
   constructor(app /* rootElement rootSelector */) {
     this.app = app;
   }
 
-  async setConfigurationOnModalDialog(configuration) {
+  /**
+   * @description 設定ダイアログを開きます。
+   */
+  async openConfigurationDialog(configuration) {
+    // メニューとサブメニューのラベルを引数に
+    // メニューを疑似的にクリックする
     spectronFakeMenu.clickMenu('Open', 'Dialog');
-    await this.app.client.waitUntilWindowLoaded(1000);
-    await this.app.client.windowByIndex(CHILD_WINDOW);
-    await ConfigurationDialogPage(this.app).updateFieldValues(
-      configuration,
-    );
-    await ConfigurationDialogPage(this.app).close();
-    await this.app.client.windowByIndex(MAIN_WINDOW);
   }
 }
 

@@ -23,8 +23,12 @@ class ConfigurationDialogPage {
     ];
   }
 
-  get closeButton() {
-    return '#close';
+  get okButton() {
+    return '#ok';
+  }
+
+  get cancelButton() {
+    return '#cancel';
   }
 
   async getFieldValue(selector) {
@@ -54,8 +58,12 @@ class ConfigurationDialogPage {
     );
   }
 
-  async close() {
-    await this.app.client.element(this.closeButton).click();
+  async ok() {
+    await this.app.client.element(this.okButton).click();
+  }
+
+  async cancel() {
+    await this.app.client.element(this.cancelButton).click();
   }
 }
 
